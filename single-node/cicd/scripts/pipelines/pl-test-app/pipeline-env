@@ -1,0 +1,7 @@
+#^ not script to run, only to load environment
+APP_NAME=pipeline-test-app
+CLONE_KEY_FILE="pipeline-deploy"
+CLONE_BRANCH="develop"
+CLONE_TO_DIR="pipeline-test-app"
+MAVEN_HOME=/root/maven/apache-maven-3.9.9/
+export JAVA_HOME=/root/jdk/jdk-22.0.1/

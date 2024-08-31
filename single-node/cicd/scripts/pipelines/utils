@@ -1,0 +1,59 @@
+#^ not script itself, just to provide utilities to other scripts
+cfn_error () {
+	local message=$1
+	local curr_date=$(date)
+	local prefix="Error:"
+	echo -e "$prefix $curr_date $message" >&2
+}
+
+cfn_info () {
+	local message=$1
+	local curr_date=$(date)
+	echo -e "$curr_date $message"
+}
+
+: <<'cfn_test_vars'
+passed in an associative array of variabled
+e.g.
+declare -a myarr
+myarr=(
+        ["key-1"]="error message if key-1 variable is undefined"
+        ["key-2"]="error message if key-2 variable is undefined"
+)
+cfn_test_vars
+cfn_test_vars () {
+        local -n __vars=$1
+        for key in "${!__vars[@]}"; do
+                if [[ -z "${!key}" ]]; then
+                        cfn_error "${__vars[$key]}"
+			exit 1
+                fi
+        done
+}
+
+cfn_exit_if_error () {
+        local err_msg=$2
+	
+        if [[ $1 -ne 0 ]]; then
+                cfn_error "$err_msg"
+                exit $1
+        fi
+}
+
+cfn_exit_if_file_ne () {
+        local filename=$1
+
+        if [ ! -f "$filename" ]; then
+                cfn_error "file '${filename}' does not exist"
+                exit 1
+        fi
+}
+
+cfn_exit_if_dir_ne () {
+        local dirname=$1
+
+        if [ ! -d "$dirname" ]; then
+                cfn_error "directory '${dirname}' does not exist"
+                exit 1
+        fi
+}
